@@ -1,12 +1,11 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { ethers, type Eip1193Provider, type Provider } from 'ethers'
+import { type Eip1193Provider, type Provider } from 'ethers'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   getReadOnlyFallbackHandlerContract,
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
-  getProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import type { UrlObject } from 'url'
 import { AppRoutes } from '@/config/routes'

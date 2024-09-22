@@ -15,7 +15,6 @@ import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import semver from 'semver'
 import { getLatestSafeVersion } from '@/utils/chains'
-import { Signer } from 'ethers'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
