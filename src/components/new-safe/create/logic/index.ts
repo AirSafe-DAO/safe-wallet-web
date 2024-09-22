@@ -19,6 +19,7 @@ import { backOff } from 'exponential-backoff'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
+import { airdaoChainInfo } from '@/hooks/loadables/airdaoChainInfo'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -30,7 +31,44 @@ const getSafeFactory = async (provider: Eip1193Provider, safeVersion: SafeVersio
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
-  return SafeFactory.init({ provider, safeVersion })
+  // return (await getProxyFactoryContract(safeVersion)) as any
+  try {
+    // const factory = new SafeFactory()
+    // factory.#provider = provider
+    // factory.#signer = signer
+    // factory.#safeProvider = await SafeProvider.init(provider, signer, safeVersion, contractNetworks)
+    // factory.#safeVersion = safeVersion
+    // this.#contractNetworks = contractNetworks
+    // const chainId = await this.#safeProvider.getChainId()
+    // const customContracts = contractNetworks?.[chainId.toString()]
+    // this.#safeProxyFactoryContract = await getProxyFactoryContract({
+    //   safeProvider: this.#safeProvider,
+    //   safeVersion,
+    //   customContracts,
+    // })
+    // this.#safeContract = await getSafeContract({
+    //   safeProvider: this.#safeProvider,
+    //   safeVersion,
+    //   isL1SafeSingleton,
+    //   customContracts,
+    // })
+    // const safeProvider = await SafeProvider.init(
+    //   provider,
+    //   undefined,
+    //   safeVersion,
+    //   airdaoChainInfo.contractAddresses as any,
+    // )
+    const factory = await SafeFactory.init({
+      provider,
+      safeVersion,
+      contractNetworks: { '22040': airdaoChainInfo.contractAddresses as any },
+    })
+    console.log('factory addr', await factory.getAddress())
+    return factory
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
 }
 
 /**
@@ -54,17 +92,26 @@ export const computeNewSafeAddress = async (
   chain: ChainInfo,
   safeVersion?: SafeVersion,
 ): Promise<string> => {
+  // console.log(provider, props, chain, safeVersion)
   const safeProvider = new SafeProvider({ provider })
 
-  return predictSafeAddress({
-    safeProvider,
-    chainId: BigInt(chain.chainId),
-    safeAccountConfig: props.safeAccountConfig,
-    safeDeploymentConfig: {
-      saltNonce: props.saltNonce,
-      safeVersion: safeVersion ?? getLatestSafeVersion(chain),
-    },
-  })
+  try {
+    const safe = await predictSafeAddress({
+      safeProvider,
+      chainId: BigInt(chain.chainId),
+      safeAccountConfig: props.safeAccountConfig,
+      safeDeploymentConfig: {
+        saltNonce: props.saltNonce,
+        safeVersion: safeVersion || getLatestSafeVersion(chain),
+      },
+      customContracts: airdaoChainInfo.contractAddresses as any,
+    })
+    console.log('predicted', safe)
+    return safe
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
 }
 
 /**

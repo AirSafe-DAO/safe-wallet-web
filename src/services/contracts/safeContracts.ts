@@ -100,7 +100,11 @@ export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo
 
   const safeProvider = safeSDK.getSafeProvider()
 
-  return getMultiSendCallOnlyContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+  return getMultiSendCallOnlyContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    '0x01cB07dD74B36a836FAd6ccEc8ac888a78Ef7b40',
+  )
 }
 
 // GnosisSafeProxyFactory
@@ -112,6 +116,18 @@ export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['ver
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
     safeProvider.getExternalProvider(),
+    '0x3e030482A27371eF35CCc5a60Cf38A888CFe985b',
+  )
+}
+
+export const getProxyFactoryContract = async (safeVersion: SafeInfo['version']) => {
+  const safeProvider = getSafeProvider()
+
+  return getSafeProxyFactoryContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    safeProvider.getExternalProvider(),
+    '0x3e030482A27371eF35CCc5a60Cf38A888CFe985b',
   )
 }
 
@@ -123,6 +139,7 @@ export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['
   return getCompatibilityFallbackHandlerContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
+    '0x53bD692DeFfd097b2955168eF4b382db5De32790',
   )
 }
 
@@ -136,5 +153,9 @@ export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['v
 
   const safeProvider = safeSDK.getSafeProvider()
 
-  return getSignMessageLibContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+  return getSignMessageLibContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    '0x2CF56a62c51430cc07008C461375ae3Abc9F71f5P',
+  )
 }

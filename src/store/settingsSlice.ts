@@ -61,7 +61,9 @@ export const initialState: SettingsState = {
   },
   theme: {},
   env: {
-    rpc: {},
+    rpc: {
+      '22040': 'https://network.ambrosus-test.io',
+    },
     tenderly: {
       url: '',
       accessToken: '',

@@ -56,7 +56,7 @@ export const useInitSafeCoreSDK = () => {
     dispatch,
     safe.address.value,
     safe.chainId,
-    safe.implementation.value,
+    safe.implementation,
     safe.implementationVersionState,
     safe.version,
     safeLoaded,

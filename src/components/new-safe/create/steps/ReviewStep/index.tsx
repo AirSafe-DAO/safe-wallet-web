@@ -180,6 +180,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
+        console.log('Counter Factual')
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
@@ -196,8 +197,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           }
         : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
+      console.log(options)
+
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
         // Create a counterfactual Safe
+        console.log(chain, safeAddress, saltNonce, data, props)
         createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayNow)
 
         if (taskId) {
@@ -219,6 +223,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
 
       if (willRelay) {
+        console.log('WILL RELAY')
         const taskId = await relaySafeCreation(
           chain,
           props.safeAccountConfig.owners,
@@ -226,9 +231,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           Number(saltNonce),
           data.safeVersion,
         )
+        console.log(taskId)
         onSubmitCallback(taskId)
       } else {
-        await createNewSafe(
+        const newSafe = await createNewSafe(
           wallet.provider,
           {
             safeAccountConfig: props.safeAccountConfig,
@@ -240,8 +246,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           },
           data.safeVersion,
         )
+        console.log('newSafe')
       }
     } catch (_err) {
+      console.error(_err)
       const error = asError(_err)
       const submitError = isWalletRejection(error)
         ? 'User rejected signing.'
